@@ -34,13 +34,62 @@ jobs:
             gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf \
             gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
+      # 👇👇👇 新增：调试 Kodi 源码结构 👇👇👇
+      - name: Debug Kodi Source Structure
+        run: |
+          echo "============================================"
+          echo "1. Searching for AddonBase.h"
+          echo "============================================"
+          find ${{ github.workspace }}/kodi_src -name "AddonBase.h" 2>/dev/null || echo "NOT FOUND"
+          echo ""
+          
+          echo "============================================"
+          echo "2. Searching for InputStream.h"
+          echo "============================================"
+          find ${{ github.workspace }}/kodi_src -name "InputStream.h" 2>/dev/null || echo "NOT FOUND"
+          echo ""
+          
+          echo "============================================"
+          echo "3. Searching for inputstream directories"
+          echo "============================================"
+          find ${{ github.workspace }}/kodi_src -type d -name "inputstream" 2>/dev/null || echo "NOT FOUND"
+          echo ""
+          
+          echo "============================================"
+          echo "4. Listing kodi-dev-kit/include/kodi/"
+          echo "============================================"
+          ls -la ${{ github.workspace }}/kodi_src/xbmc/addons/kodi-dev-kit/include/kodi/ 2>/dev/null || echo "DIRECTORY NOT FOUND"
+          echo ""
+          
+          echo "============================================"
+          echo "5. Full kodi-dev-kit directory structure"
+          echo "============================================"
+          find ${{ github.workspace }}/kodi_src/xbmc/addons/kodi-dev-kit -maxdepth 4 -type d 2>/dev/null || echo "NOT FOUND"
+          echo ""
+          
+          echo "============================================"
+          echo "6. Kodi source root directory structure"
+          echo "============================================"
+          ls -la ${{ github.workspace }}/kodi_src/
+          echo ""
+          
+          echo "============================================"
+          echo "7. xbmc/addons directory structure"
+          echo "============================================"
+          ls -la ${{ github.workspace }}/kodi_src/xbmc/addons/ 2>/dev/null || echo "NOT FOUND"
+          echo ""
+          
+          echo "============================================"
+          echo "8. Search for any .h files in kodi-dev-kit"
+          echo "============================================"
+          find ${{ github.workspace }}/kodi_src/xbmc/addons/kodi-dev-kit -name "*.h" 2>/dev/null | head -20 || echo "NOT FOUND"
+
       - name: Configure and Build
         shell: bash
         run: |
           mkdir -p build
           cmake -B build -S . \
             -DKODI_SOURCE_DIR=${{ github.workspace }}/kodi_src \
-            -DKODI_INCLUDE_DIR=${{ github.workspace }}/kodi_src/xbmc \
             ${{ matrix.cmake-args }}
           cmake --build build --config Release --parallel
 
@@ -50,9 +99,7 @@ jobs:
           ADDON_ID="inputstream.vivid"
           mkdir -p $ADDON_ID
           cp addon.xml $ADDON_ID/
-          # 查找并复制编译好的 .so 文件
           find build -name "*.so" -exec cp {} $ADDON_ID/$ADDON_ID.so \;
-          # 如果没有找到 .so，尝试在 build 根目录查找
           if [ ! -f $ADDON_ID/$ADDON_ID.so ]; then
             cp build/$ADDON_ID.so $ADDON_ID/ 2>/dev/null || true
           fi
