@@ -10,13 +10,16 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_compile_options(-fpermissive -w)
 
 # ==============================================
-# 🔥 正确的 Kodi 21 头文件路径
+# 🔥 完整的 Kodi 21 头文件路径
 # ==============================================
 include_directories(
     ${KODI_SOURCE_DIR}/xbmc/addons/kodi-dev-kit/include
     ${KODI_SOURCE_DIR}/xbmc
     ${KODI_SOURCE_DIR}/xbmc/addons
+    ${KODI_SOURCE_DIR}/xbmc/addons/kodi-dev-kit/include/kodi
     ${KODI_SOURCE_DIR}/xbmc/cores/VideoPlayer
+    ${KODI_SOURCE_DIR}/xbmc/input
+    ${KODI_SOURCE_DIR}/lib
     src
 )
 
