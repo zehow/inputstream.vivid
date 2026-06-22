@@ -12,7 +12,9 @@ jobs:
           - os: linux
             arch: armv7
             cmake-args: -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=arm -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++
-
+          - os: linux
+            arch: aarch64
+            cmake-args: -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=aarch64 -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +31,7 @@ jobs:
       - name: Install Linux Build Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake g++ pkg-config build-essential gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+          sudo apt-get install -y cmake g++ pkg-config build-essential gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
       # 编译（模板原生命令）
       - name: Configure and Build
@@ -55,5 +57,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: inputstream.vivid-linux-armv7
+          name: inputstream.vivid-linux-${{ matrix.arch }}
           path: staging/
